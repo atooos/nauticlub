@@ -17,6 +17,17 @@ type ServiceUser struct {
 }
 
 func (su *ServiceUser) Get(ctx *gin.Context) {
+	uuid := ctx.Param("uuid")
+	u, err := su.db.GetUser(uuid)
+	if err != nil {
+		log.Println(err)
+		ctx.JSON(http.StatusNotFound, nil)
+		return
+	}
+	ctx.JSON(200, u)
+}
+
+func (su *ServiceUser) GetAll(ctx *gin.Context) {
 	us, err := su.db.GetAllUser()
 	if err != nil {
 		log.Println(err)

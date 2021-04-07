@@ -12,7 +12,8 @@ func Init(port string, db db.Storage) {
 		db: db,
 	}
 	// Users
-	r.GET("/users", su.Get)
+	r.GET("/users", su.GetAll)
+	r.GET("/users/:uuid", su.Get)
 	r.POST("/users", su.Create)
 	r.DELETE("/users/:uuid", su.Delete)
 	r.PUT("/users/:uuid", su.Update)
