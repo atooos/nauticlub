@@ -13,7 +13,8 @@ import (
 )
 
 type ServiceUser struct {
-	db db.Storage
+	db     db.Storage
+	jwtKey string
 }
 
 func (su *ServiceUser) Get(ctx *gin.Context) {
@@ -138,13 +139,13 @@ func (su *ServiceUser) Login(ctx *gin.Context) {
 	}
 
 	// Create the token
-	clains := jwt.MapClaims{
+	claims := jwt.MapClaims{
 		"id":  udb.ID,
 		"exp": time.Now().Add(time.Hour * 72).Unix(),
 	}
-	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), clains)
+	token := jwt.NewWithClaims(jwt.GetSigningMethod("HS256"), claims)
 	// Sign and get the complete encoded token as a string
-	tokenString, err := token.SignedString([]byte("mySigningKey"))
+	tokenString, err := token.SignedString([]byte(su.jwtKey))
 	if err != nil {
 		log.Println(err)
 		ctx.JSON(http.StatusInternalServerError, nil)

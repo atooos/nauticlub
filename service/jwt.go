@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func JWTMiddlware() gin.HandlerFunc {
+func JWTMiddlware(secretKey string) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		auth := ctx.Request.Header.Get("Authorization")
 		if len(auth) == 0 || !strings.ContainsAny(auth, "Bearer ") {
@@ -20,7 +20,7 @@ func JWTMiddlware() gin.HandlerFunc {
 
 		auth = strings.ReplaceAll(auth, "Bearer ", "")
 		var kf jwt.Keyfunc = func(*jwt.Token) (interface{}, error) {
-			return []byte("mySigningKey"), nil
+			return []byte(secretKey), nil
 		}
 
 		token, err := jwt.Parse(auth, kf)
@@ -29,7 +29,9 @@ func JWTMiddlware() gin.HandlerFunc {
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, nil)
 			return
 		}
-		log.Println("claims", token.Claims)
 
+		userUUID := token.Claims.(jwt.MapClaims)["id"]
+		log.Println("claims uuid user", userUUID)
+		ctx.Set("user_uuid", userUUID)
 	}
 }
