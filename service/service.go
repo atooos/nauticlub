@@ -1,12 +1,14 @@
 package service
 
 import (
+	"net/http"
+
 	"github.com/gin-gonic/gin"
 
 	"github.com/atooos/nauticlub/db"
 )
 
-func Init(port string, db db.Storage, jwtKey string) {
+func New(port string, db db.Storage, jwtKey string) *http.Server {
 	r := gin.Default()
 	su := &ServiceUser{
 		db:     db,
@@ -21,5 +23,10 @@ func Init(port string, db db.Storage, jwtKey string) {
 	r.POST("/login", su.Login)
 	// Pdf
 	r.POST("/pdf", CreatePDF)
-	r.Run(":" + port)
+	//r.Run(":" + port)
+	return &http.Server{
+		Addr:    ":" + port,
+		Handler: r,
+	}
+
 }
