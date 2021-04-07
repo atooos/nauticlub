@@ -16,6 +16,7 @@ func Init(port string, db db.Storage) {
 	r.POST("/users", su.Create)
 	r.DELETE("/users/:uuid", su.Delete)
 	r.PUT("/users/:uuid", su.Update)
+	r.POST("/login", su.Login)
 	// Pdf
 	r.POST("/pdf", CreatePDF)
 	r.Run(":" + port)

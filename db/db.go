@@ -8,4 +8,5 @@ type Storage interface {
 	UpdateUser(uuid string, u *model.User) error
 	GetUser(uuid string) (u *model.User, err error)
 	GetAllUser() (us []model.User, err error)
+	GetUserByEmail(email string) (u *model.User, err error)
 }

@@ -8,6 +8,8 @@ import (
 	"github.com/google/uuid"
 )
 
+var ErrNotFound = errors.New("not found")
+
 var _ dbStorage.Storage = &DB{}
 
 func New() dbStorage.Storage {
@@ -29,7 +31,7 @@ func (db *DB) CreateUser(u *model.User) error {
 func (db *DB) DeleteUser(uuid string) error {
 	_, ok := db.ListUser[uuid]
 	if !ok {
-		return errors.New("not found")
+		return ErrNotFound
 	}
 	delete(db.ListUser, uuid)
 	return nil
@@ -38,7 +40,7 @@ func (db *DB) DeleteUser(uuid string) error {
 func (db *DB) UpdateUser(uuid string, u *model.User) error {
 	_, ok := db.ListUser[uuid]
 	if !ok {
-		return errors.New("not found")
+		return ErrNotFound
 	}
 	db.ListUser[uuid] = u
 	return nil
@@ -47,7 +49,7 @@ func (db *DB) UpdateUser(uuid string, u *model.User) error {
 func (db *DB) GetUser(uuid string) (u *model.User, err error) {
 	u, ok := db.ListUser[uuid]
 	if !ok {
-		return nil, errors.New("not found")
+		return nil, ErrNotFound
 	}
 	return u, nil
 }
@@ -58,4 +60,13 @@ func (db *DB) GetAllUser() (us []model.User, err error) {
 		us = append(us, *db.ListUser[k])
 	}
 	return us, nil
+}
+
+func (db *DB) GetUserByEmail(email string) (u *model.User, err error) {
+	for k := range db.ListUser {
+		if db.ListUser[k].Email == email {
+			return db.ListUser[k], nil
+		}
+	}
+	return nil, ErrNotFound
 }
