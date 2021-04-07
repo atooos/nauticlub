@@ -1,15 +1,22 @@
 package service
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
 
-func Init() {
+	"github.com/atooos/nauticlub/db"
+)
+
+func Init(port string, db db.Storage) {
 	r := gin.Default()
+	su := &ServiceUser{
+		db: db,
+	}
 	// Users
-	r.GET("/users", GetUsers)
-	r.POST("/users", CreateUser)
-	r.DELETE("/users/:uuid", DeleteUser)
-	r.PUT("/users/:uuid", UpdateUser)
+	r.GET("/users", su.Get)
+	r.POST("/users", su.Create)
+	r.DELETE("/users/:uuid", su.Delete)
+	r.PUT("/users/:uuid", su.Update)
 	// Pdf
 	r.POST("/pdf", CreatePDF)
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+	r.Run(":" + port)
 }

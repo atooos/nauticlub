@@ -1,7 +1,11 @@
 package main
 
-import "github.com/atooos/nauticlub/service"
+import (
+	"github.com/atooos/nauticlub/db/moke"
+	"github.com/atooos/nauticlub/service"
+)
 
 func main() {
-	service.Init()
+	db := moke.New()
+	service.Init("8080", db)
 }

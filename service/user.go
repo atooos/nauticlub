@@ -5,18 +5,26 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 
+	"github.com/atooos/nauticlub/db"
 	"github.com/atooos/nauticlub/model"
 )
 
-var UserList = map[string]*model.User{}
-
-func GetUsers(ctx *gin.Context) {
-	ctx.JSON(200, UserList)
+type ServiceUser struct {
+	db db.Storage
 }
 
-func CreateUser(ctx *gin.Context) {
+func (su *ServiceUser) Get(ctx *gin.Context) {
+	us, err := su.db.GetAllUser()
+	if err != nil {
+		log.Println(err)
+		ctx.JSON(http.StatusInternalServerError, nil)
+		return
+	}
+	ctx.JSON(200, us)
+}
+
+func (su *ServiceUser) Create(ctx *gin.Context) {
 	var u model.User
 	err := ctx.BindJSON(&u)
 	if err != nil {
@@ -30,43 +38,59 @@ func CreateUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, nil)
 		return
 	}
-	u.ID = uuid.NewString()
-	UserList[u.ID] = &u
+	su.db.CreateUser(&u)
 	ctx.JSON(200, u)
 }
 
-func UpdateUser(ctx *gin.Context) {
+func (su *ServiceUser) Update(ctx *gin.Context) {
 	uuid := ctx.Param("uuid")
-	_, ok := UserList[uuid]
-	if !ok {
+	_, err := su.db.GetUser(uuid)
+	if err != nil {
+		log.Println(err)
 		ctx.JSON(http.StatusNotFound, nil)
 		return
 	}
 
 	var u model.User
-	err := ctx.BindJSON(&u)
+	err = ctx.BindJSON(&u)
 	if err != nil {
 		log.Println(err)
 		ctx.JSON(http.StatusBadRequest, nil)
 		return
 	}
+
 	err = u.ValidUpdatePayload()
 	if err != nil {
 		log.Println(err)
 		ctx.JSON(http.StatusBadRequest, nil)
 		return
 	}
-	UserList[uuid] = &u
+
+	err = su.db.UpdateUser(uuid, &u)
+	if err != nil {
+		log.Println(err)
+		ctx.JSON(http.StatusInternalServerError, nil)
+		return
+	}
+
 	ctx.JSON(http.StatusAccepted, u)
 }
 
-func DeleteUser(ctx *gin.Context) {
+func (su *ServiceUser) Delete(ctx *gin.Context) {
 	uuid := ctx.Param("uuid")
-	_, ok := UserList[uuid]
-	if !ok {
+	_, err := su.db.GetUser(uuid)
+	if err != nil {
+		log.Println(err)
 		ctx.JSON(http.StatusNotFound, nil)
 		return
 	}
-	delete(UserList, uuid)
+
+	err = su.db.DeleteUser(uuid)
+	if err != nil {
+		log.Println(err)
+		ctx.JSON(http.StatusInternalServerError, nil)
+		return
+	}
+
 	ctx.JSON(http.StatusAccepted, nil)
 }
