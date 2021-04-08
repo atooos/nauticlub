@@ -12,14 +12,33 @@ const (
 	DateFromat = "2006-01-02"
 )
 
+type MembershipType int
+
+const (
+	MembershipUnknown MembershipType = iota
+	MembershipFamilly
+	MembershipIndividual
+)
+
+var tblMembership = []string{
+	"unknown",
+	"familly",
+	"individual",
+}
+
+func (mt MembershipType) String() string {
+	return tblMembership[mt]
+}
+
 type User struct {
-	ID          string    `json:"uuid"`
-	FirstName   string    `json:"first_name"`
-	LastName    string    `json:"last_name"`
-	BirthDate   time.Time `json:"birth_date"`
-	Email       string    `json:"email"`
-	Password    string    `json:"pass"`
-	PhoneNumber string    `json:"phone_number"`
+	ID          string         `json:"uuid"`
+	FirstName   string         `json:"first_name"`
+	LastName    string         `json:"last_name"`
+	BirthDate   time.Time      `json:"birth_date"`
+	Email       string         `json:"email"`
+	Password    string         `json:"pass"`
+	PhoneNumber string         `json:"phone_number"`
+	Membership  MembershipType `json:"membership"`
 }
 
 type UserAux struct {
@@ -28,8 +47,9 @@ type UserAux struct {
 	LastName    string `json:"last_name"`
 	BirthDate   string `json:"birth_date"`
 	Email       string `json:"email"`
-	Password    string `json:"pass"`
-	PhoneNumber string `json:"phone_number"`
+	Password    string `json:"pass,omitempty"`
+	PhoneNumber string `json:"phone_number,omitempty"`
+	Membership  string `json:"membership,omitempty"`
 }
 
 func (u *User) UnmarshalJSON(b []byte) error {
@@ -56,6 +76,17 @@ func (u *User) UnmarshalJSON(b []byte) error {
 		}
 	}
 
+	if len(aux.Membership) != 0 {
+		switch aux.Membership {
+		case "familly":
+			u.Membership = MembershipFamilly
+		case "individual":
+			u.Membership = MembershipIndividual
+		default:
+			u.Membership = MembershipUnknown
+		}
+	}
+
 	return nil
 }
 
@@ -68,6 +99,7 @@ func (u User) MarshalJSON() ([]byte, error) {
 	aux.PhoneNumber = u.PhoneNumber
 	aux.BirthDate = u.BirthDate.Format(DateFromat)
 	aux.Password = ""
+	aux.Membership = u.Membership.String()
 	return json.Marshal(aux)
 }
 
