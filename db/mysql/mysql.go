@@ -14,7 +14,7 @@ import (
 type DB = sqlite.DB
 
 func New(dbname, user, pass string) db.Storage {
-	dsn := fmt.Sprintf("%v:%v@tcp(127.0.0.1:3306)/%v?charset=utf8mb4&parseTime=True&loc=Local", user, pass, dbname)
+	dsn := fmt.Sprintf("%v:%v@tcp(localhost:3306)/%v?charset=utf8mb4&parseTime=True&loc=Local", user, pass, dbname)
 	conn, err := gorm.Open(sql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)

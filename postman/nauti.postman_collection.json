@@ -8,118 +8,221 @@
 	},
 	"item": [
 		{
-			"name": "get all users",
-			"request": {
-				"url": "localhost:8080/users",
-				"method": "GET",
-				"header": [],
-				"body": {},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "get",
-			"request": {
-				"url": "localhost:8080/users/{{user_uuid}}",
-				"method": "GET",
-				"header": [],
-				"body": {},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "create user",
-			"event": [
+			"name": "user",
+			"description": "",
+			"item": [
 				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"var jsonData = JSON.parse(responseBody);",
-							"postman.setEnvironmentVariable(\"user_uuid\", jsonData.uuid);"
-						]
-					}
-				}
-			],
-			"request": {
-				"url": "localhost:8080/users",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
+					"name": "get all users",
+					"request": {
+						"url": "{{url}}/users",
+						"method": "GET",
+						"header": [],
+						"body": {},
 						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"first_name\":\"Rob\",\n\t\"last_name\":\"Pike\",\n\t\"email\":\"r@google.fr\",\n\t\"birth_date\":\"2006-01-02\",\n\t\"phone_number\":\"06 00 00 00 00\",\n\t\"pass\":\"coucou123\"\n}"
+					},
+					"response": []
 				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "login",
-			"event": [
 				{
-					"listen": "test",
-					"script": {
-						"type": "text/javascript",
-						"exec": [
-							"var jsonData = JSON.parse(responseBody);",
-							"postman.setEnvironmentVariable(\"jwt\", jsonData.jwt);"
-						]
-					}
-				}
-			],
-			"request": {
-				"url": "localhost:8080/login",
-				"method": "POST",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json",
+					"name": "get",
+					"request": {
+						"url": "{{url}}/users/{{user_uuid}}",
+						"method": "GET",
+						"header": [],
+						"body": {},
 						"description": ""
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n\t\"email\":\"r@google.fr\",\n\t\"pass\":\"coucou123\"\n}"
+					},
+					"response": []
 				},
-				"description": ""
-			},
-			"response": []
-		},
-		{
-			"name": "delete",
-			"request": {
-				"url": "localhost:8080/users/{{user_uuid}}",
-				"method": "DELETE",
-				"header": [
-					{
-						"key": "Authorization",
-						"value": "Bearer {{jwt}}",
+				{
+					"name": "create user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"user_uuid\", jsonData.uuid);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/users",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"first_name\":\"Rob\",\n\t\"last_name\":\"Pike\",\n\t\"email\":\"r@google.fr\",\n\t\"birth_date\":\"2006-01-02\",\n\t\"phone_number\":\"06 00 00 00 00\",\n\t\"pass\":\"coucou123\",\n\t\"membership\":\"familly\"\n}"
+						},
 						"description": ""
-					}
-				],
-				"body": {},
-				"description": ""
-			},
-			"response": []
+					},
+					"response": []
+				},
+				{
+					"name": "login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"jwt\", jsonData.jwt);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/login",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\":\"r@google.fr\",\n\t\"pass\":\"coucou123\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"url": "{{url}}/users/{{user_uuid}}",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"url": "{{url}}/users/{{user_uuid}}",
+						"method": "PUT",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				}
+			]
 		},
 		{
-			"name": "update",
-			"request": {
-				"url": "localhost:8080/users/{{user_uuid}}",
-				"method": "PUT",
-				"header": [],
-				"body": {},
-				"description": ""
-			},
-			"response": []
+			"name": "sub",
+			"description": "",
+			"item": [
+				{
+					"name": "get all sub",
+					"request": {
+						"url": "{{url}}/sub",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "get",
+					"request": {
+						"url": "{{url}}/sub/{{sub_uuid}}",
+						"method": "GET",
+						"header": [],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "create sub",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody);",
+									"postman.setEnvironmentVariable(\"sub_uuid\", jsonData.uuid);"
+								]
+							}
+						}
+					],
+					"request": {
+						"url": "{{url}}/sub",
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"user_uuid\":\"{{user_uuid}}\",\n\t\"kind\":\"club\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "delete",
+					"request": {
+						"url": "{{url}}/sub/{{sub_uuid}}",
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{jwt}}",
+								"description": ""
+							}
+						],
+						"body": {},
+						"description": ""
+					},
+					"response": []
+				},
+				{
+					"name": "update",
+					"request": {
+						"url": "{{url}}/sub/{{sub_uuid}}",
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"description": ""
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"user_uuid\":\"{{user_uuid}}\",\n\t\"kind\":\"licence\"\n}"
+						},
+						"description": ""
+					},
+					"response": []
+				}
+			]
 		}
 	]
 }

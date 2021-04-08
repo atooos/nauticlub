@@ -9,3 +9,11 @@ services:
             MYSQL_DATABASE: nautidb
             MYSQL_USER: nautiuser
             MYSQL_PASSWORD: nautipass
+            MYSQL_ROOT_PASSWORD: pass
+        ports:
+            - 3306:3306
+    #api:
+    #    image: nauticlub:v0.0.1
+    #    restart: always
+    #    ports:
+    #        - 8080:8080

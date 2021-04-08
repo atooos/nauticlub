@@ -1,4 +1,4 @@
-env: qa
+env: prod
 jwt_key: lsadkjflkdsajfQJVhSAaslsjdkjf
 port: 8080
 db:
