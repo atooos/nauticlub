@@ -19,8 +19,8 @@ type SubAux struct {
 	UserID    string `json:"user_uuid"`
 	Kind      string `json:"kind"`
 	CreatedAt string `json:"created_at"`
-	UpdateAt  string `json:"update_at"`
-	ExpiredAt string `json:"expired_at"`
+	UpdateAt  string `json:"update_at,omitempty"`
+	ExpiredAt string `json:"expired_at,omitempty"`
 }
 
 func (s *Sub) UnmarshalJSON(b []byte) error {
@@ -29,7 +29,10 @@ func (s *Sub) UnmarshalJSON(b []byte) error {
 	if err != nil {
 		return err
 	}
-	s.ID = aux.ID
+	if len(aux.ID) != 0 {
+		s.ID = aux.ID
+	}
+
 	s.UserID = aux.UserID
 	if len(aux.CreatedAt) != 0 {
 		s.CreatedAt, err = time.Parse(DateFromat, aux.CreatedAt)
@@ -92,4 +95,12 @@ var tblSub = []string{
 
 func (st SubType) String() string {
 	return tblSub[st]
+}
+
+func (s *Sub) ValidCreatePayload() error {
+	return nil
+}
+
+func (s *Sub) ValidUpdatePayload() error {
+	return nil
 }
