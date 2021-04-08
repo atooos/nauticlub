@@ -6,7 +6,7 @@ import (
 )
 
 type Sub struct {
-	ID        string    `json:"uuid"`
+	ID        string    `json:"uuid" gorm:"primaryKey"`
 	UserID    string    `json:"user_uuid"`
 	Kind      SubType   `json:"kind"`
 	CreatedAt time.Time `json:"created_at"`

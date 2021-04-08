@@ -14,6 +14,8 @@ import (
 
 	"github.com/atooos/nauticlub/db"
 	"github.com/atooos/nauticlub/db/moke"
+	"github.com/atooos/nauticlub/db/mysql"
+	"github.com/atooos/nauticlub/db/sqlite"
 	"github.com/atooos/nauticlub/service"
 )
 
@@ -21,6 +23,11 @@ type Config struct {
 	Port   string
 	JWTKey string
 	Env    string
+	DB     struct {
+		Name string
+		User string
+		Pass string
+	}
 }
 
 var config Config
@@ -36,12 +43,21 @@ func init() {
 	config.Env = viper.GetString("env")
 	config.JWTKey = viper.GetString("jwt_key")
 	config.Port = viper.GetString("port")
+
+	// db conn
+	config.DB.Name = viper.GetString("db.name")
+	config.DB.User = viper.GetString("db.user")
+	config.DB.Pass = viper.GetString("db.pass")
 }
 
 func main() {
 	var db db.Storage
 	if config.Env == "local" {
 		db = moke.New()
+	} else if config.Env == "qa" {
+		db = sqlite.New("local.db")
+	} else if config.Env == "prod" {
+		db = mysql.New(config.DB.Name, config.DB.User, config.DB.Pass)
 	}
 
 	srv := service.New(config.Port, db, config.JWTKey)

@@ -31,7 +31,7 @@ func (mt MembershipType) String() string {
 }
 
 type User struct {
-	ID          string         `json:"uuid"`
+	ID          string         `json:"uuid" gorm:"primaryKey"`
 	FirstName   string         `json:"first_name"`
 	LastName    string         `json:"last_name"`
 	BirthDate   time.Time      `json:"birth_date"`
